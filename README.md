@@ -1,3 +1,4 @@
+This is a PREVIEW sample of the .NET Teams Bot Builder SDK v4, built on top of the Bot Builder v4 SDK.
 
 # Contributing
 
