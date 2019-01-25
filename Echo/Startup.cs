@@ -83,7 +83,7 @@ namespace Echo
                options.OnTurnError = async (context, exception) =>
               {
                   logger.LogError($"Exception caught : {exception}");
-                  await context.SendActivityAsync("Sorry, it looks like something went wrong.");
+                  await context.SendActivityAsync($"EX: {exception.InnerException}");
               };
 
                // The Memory Storage used here is for local bot debugging only. When the bot

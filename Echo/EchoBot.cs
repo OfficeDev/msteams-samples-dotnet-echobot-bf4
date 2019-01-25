@@ -3,10 +3,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Teams;
+using Microsoft.Bot.Connector;
 using Microsoft.Bot.Connector.Teams;
 using Microsoft.Bot.Schema;
 using Microsoft.Bot.Schema.Teams;
@@ -79,7 +81,19 @@ namespace Echo
                 // Make an operation call to fetch details of the team where the activity was posted, and print it.
                 TeamDetails teamInfo = await teamsContext.Operations.FetchTeamDetailsAsync(incomingTeamId);
                 await turnContext.SendActivityAsync($"Name of this team is {teamInfo.Name} and group-id is {teamInfo.AadGroupId}");
-                
+
+                var from = teamsContext.AsTeamsChannelAccount(turnContext.Activity.From);
+
+                var roster = teamsContext.GetConversationParametersForCreateOrGetDirectConversation(turnContext.Activity.From).Members;
+
+                List<TeamsChannelAccount> rosterTC = roster.ToList().ConvertAll(member =>
+                    {
+                        return teamsContext.AsTeamsChannelAccount(member);
+                    });
+
+                await turnContext.SendActivityAsync($"You have {roster.Count} number of people in this group. You are {from.Name} and your UPN is {from.UserPrincipalName}");
+                await turnContext.SendActivityAsync($"rosterTC[0]: {rosterTC[0].GivenName}");
+
                 // Get the conversation state from the turn context.
                 CounterState state = await _accessors.CounterState.GetAsync(turnContext, () => new CounterState());
 
