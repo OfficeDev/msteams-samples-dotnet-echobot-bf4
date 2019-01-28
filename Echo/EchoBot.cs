@@ -81,18 +81,16 @@ namespace Echo
                 // Make an operation call to fetch details of the team where the activity was posted, and print it.
                 TeamDetails teamInfo = await teamsContext.Operations.FetchTeamDetailsAsync(incomingTeamId);
                 await turnContext.SendActivityAsync($"Name of this team is {teamInfo.Name} and group-id is {teamInfo.AadGroupId}");
+                var fromAaDId = turnContext.Activity.From.AadObjectId;
 
                 var from = teamsContext.AsTeamsChannelAccount(turnContext.Activity.From);
 
+                List<ChannelAccount> teamMembers = (await turnContext.TurnState.Get<IConnectorClient>().Conversations.GetConversationMembersAsync(
+                    turnContext.Activity.GetChannelData<TeamsChannelData>().Team.Id).ConfigureAwait(false)).ToList();
+
                 var roster = teamsContext.GetConversationParametersForCreateOrGetDirectConversation(turnContext.Activity.From).Members;
 
-                List<TeamsChannelAccount> rosterTC = roster.ToList().ConvertAll(member =>
-                    {
-                        return teamsContext.AsTeamsChannelAccount(member);
-                    });
-
-                await turnContext.SendActivityAsync($"You have {roster.Count} number of people in this group. You are {from.Name} and your UPN is {from.UserPrincipalName}");
-                await turnContext.SendActivityAsync($"rosterTC[0]: {rosterTC[0].GivenName}");
+                await turnContext.SendActivityAsync($"There are {roster.Count} people in this group. You are {from.Name} and your AAD Id is {fromAaDId}");
 
                 // Get the conversation state from the turn context.
                 CounterState state = await _accessors.CounterState.GetAsync(turnContext, () => new CounterState());
