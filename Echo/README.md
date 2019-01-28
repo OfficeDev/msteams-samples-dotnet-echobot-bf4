@@ -1,6 +1,7 @@
 ﻿# Echo
 
-This bot is a simple bot that accepts input from the user, adds some details from the Microsoft Teams team that the bot was contact from and sends the information back. The bot also contains a simple Messaging extension example
+This is a simple bot that accepts input from a user in Microsoft Teams, adds details from the Microsoft Teams team that the bot was contacted from and sends the information back. The bot also contains a simple Messaging extension example to demonstrate the use of the Invoke activity.
+
 This bot has been created using [Microsoft Bot Framework][1].
 
 # Prerequisites
